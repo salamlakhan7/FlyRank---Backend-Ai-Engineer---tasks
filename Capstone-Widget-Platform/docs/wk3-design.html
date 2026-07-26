@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Wk3 Design — Embeddable Widget & Lead-Capture Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1220; --ink:#14181F; --paper:#FAFAF8; --card:#FFFFFF;
+    --gold:#E8A33D; --hair:#E4E3DE; --dim:#6B7280;
+    --green:#3D8F63; --green-bg:#EAF6EF; --red:#C0483F; --red-bg:#FBEAE8;
+    --mono:'IBM Plex Mono',monospace; --sans:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--paper); color:var(--ink); font-family:var(--sans); line-height:1.6;}
+  .wrap{max-width:980px;margin:0 auto;padding:64px 32px 90px;}
+  .kicker{font-family:var(--mono);font-size:13px;color:var(--gold);margin-bottom:10px;}
+  h1{font-family:var(--mono);font-weight:600;font-size:28px;letter-spacing:-0.01em;margin-bottom:6px;}
+  .lede{color:var(--dim);font-size:14px;max-width:640px;margin-bottom:40px;}
+  section{margin-bottom:48px;}
+  h2{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--navy);
+     text-transform:uppercase;letter-spacing:0.06em;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--hair);}
+  h3{font-family:var(--mono); font-size:13px; font-weight:600; color:var(--navy); margin:18px 0 8px;}
+
+  table{width:100%; border-collapse:collapse; font-size:13px; margin-bottom:8px;}
+  th{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:0.04em;
+     color:var(--dim); text-align:left; padding:7px 9px; border-bottom:1px solid var(--hair); background:#F0F1F3;}
+  td{padding:8px 9px; border-bottom:1px solid var(--hair); vertical-align:top; font-family:var(--mono); font-size:12px;}
+  td.desc{font-family:var(--sans); font-size:12.5px; color:var(--dim);}
+
+  .diagram-card{border:1px solid var(--hair); border-radius:8px; overflow:hidden; background:var(--card); padding:10px;}
+  .diagram-card img{width:100%; display:block;}
+
+  .contract-block{
+    background:var(--navy); color:#EDEFF3; border-radius:8px; padding:18px 22px; margin-bottom:14px;
+    font-family:var(--mono); font-size:12.5px; line-height:1.7; overflow-x:auto;
+  }
+  .contract-block .comment{color:#8B93A7;}
+  .contract-label{font-family:var(--mono); font-size:11px; color:var(--gold); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.04em;}
+
+  .badge{font-family:var(--mono); font-size:10px; padding:2px 7px; border-radius:4px; display:inline-block;}
+  .badge.status2{background:var(--green-bg); color:var(--green);}
+  .badge.status4{background:var(--red-bg); color:var(--red);}
+  .badge.deferred{background:#FFF3E0; color:#9C6A1E;}
+
+  .note-card{
+    background:#FFF7E9; border:1px solid var(--gold); border-radius:8px; padding:16px 20px; font-size:13px;
+  }
+  .note-card b{font-family:var(--mono);}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--hair);
+    font-family:var(--mono);font-size:11px;color:var(--dim);display:flex;justify-content:space-between;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="kicker">// capstone — wk3 design milestone</div>
+  <h1>Embeddable Widget &amp; Lead-Capture Platform</h1>
+  <p class="lede">Design-only pass: the widget data model, the full embed flow from admin creation to a submission landing in a dashboard, and the exact contract for the public submission endpoint. No code yet — this is the map the Wk5/6 and Wk8 builds follow.</p>
+
+  <section>
+    <h2>1 · Widget data model</h2>
+
+    <h3>widgets</h3>
+    <table>
+      <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+      <tr><td>id</td><td>uuid, PK</td><td class="desc">Used as the public widget_id in the embed snippet</td></tr>
+      <tr><td>tenant_id</td><td>uuid, FK</td><td class="desc">Every query filters on this — tenant isolation, no exceptions</td></tr>
+      <tr><td>type</td><td>enum</td><td class="desc">popover · signup_form · cta</td></tr>
+      <tr><td>name</td><td>text</td><td class="desc">Internal label, owner-facing only</td></tr>
+      <tr><td>status</td><td>enum</td><td class="desc">draft · active · paused — config endpoint 404s unless active</td></tr>
+      <tr><td>config</td><td>jsonb</td><td class="desc">copy, fields[], targeting rules, style — see below</td></tr>
+      <tr><td>embed_version</td><td>text</td><td class="desc">Pinned bundle version for cache-busting on change</td></tr>
+      <tr><td>created_at / updated_at</td><td>timestamp</td><td class="desc"></td></tr>
+    </table>
+
+    <h3>config (jsonb shape)</h3>
+    <div class="contract-block">{<br>
+&nbsp;&nbsp;"copy": { "headline": "...", "body": "...", "button_text": "..." },<br>
+&nbsp;&nbsp;"fields": [{ "name": "email", "label": "Email", "type": "email", "required": true }],<br>
+&nbsp;&nbsp;"targeting": { "pages": ["/pricing"], "delay_seconds": 5, "frequency": "once_per_visitor" },<br>
+&nbsp;&nbsp;"style": { "primary_color": "#0B1220", "position": "bottom-right" }<br>
+}</div>
+
+    <h3>submissions</h3>
+    <table>
+      <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+      <tr><td>id</td><td>uuid, PK</td><td class="desc"></td></tr>
+      <tr><td>widget_id</td><td>uuid, FK</td><td class="desc"></td></tr>
+      <tr><td>tenant_id</td><td>uuid</td><td class="desc">Denormalized from the widget — fast, isolated dashboard queries</td></tr>
+      <tr><td>fields</td><td>jsonb</td><td class="desc">The actual submitted values</td></tr>
+      <tr><td>enrichment</td><td>jsonb</td><td class="desc">{ ip, country, region, city, provider_used }</td></tr>
+      <tr><td>flagged</td><td>boolean</td><td class="desc">Set by the spam control, doesn't block storage</td></tr>
+      <tr><td>status</td><td>enum</td><td class="desc">received · flagged · processed</td></tr>
+      <tr><td>created_at</td><td>timestamp</td><td class="desc"></td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>2 · Embed flow</h2>
+    <div class="diagram-card">
+      <img src="embed-flow-diagram.svg" alt="Embed flow diagram">
+    </div>
+    <h3 style="margin-top:20px;">Step by step</h3>
+    <table>
+      <tr><th>#</th><th>Who</th><th>What happens</th></tr>
+      <tr><td>1</td><td>Owner</td><td class="desc"><code>POST /widgets</code> (authenticated) creates a tenant-isolated widget row</td></tr>
+      <tr><td>2</td><td>Backend</td><td class="desc">Returns an embed snippet: <code>&lt;script src="cdn/widget.js" data-widget-id="{id}"&gt;</code></td></tr>
+      <tr><td>3</td><td>Owner</td><td class="desc">Pastes the snippet into their site's HTML — a different origin than our API</td></tr>
+      <tr><td>4</td><td>widget.js</td><td class="desc"><code>GET /widgets/:id/config</code> — public, cached, CORS-enabled</td></tr>
+      <tr><td>5</td><td>widget.js</td><td class="desc">Renders the popover/form client-side using the returned config</td></tr>
+      <tr><td>6</td><td>Visitor</td><td class="desc">Submits the form — CORS <code>POST /submissions</code> fires from the customer's origin</td></tr>
+      <tr><td>7</td><td>Backend</td><td class="desc">Validate → rate-limit → spam-check → enrich (geo fallback chain) → store → safe side-effect</td></tr>
+      <tr><td>8</td><td>Owner</td><td class="desc">Views submissions + stats on an authenticated, tenant-isolated dashboard</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>3 · Submission contract</h2>
+
+    <div class="contract-label">POST /submissions — public, CORS-enabled</div>
+    <div class="contract-block">
+Request body:<br>
+{<br>
+&nbsp;&nbsp;"widget_id": "uuid",<br>
+&nbsp;&nbsp;"fields": { "email": "visitor@example.com", "name": "..." },<br>
+&nbsp;&nbsp;"honeypot": ""&nbsp;&nbsp;<span class="comment">// must arrive empty — bots tend to fill every field</span><br>
+}
+    </div>
+    <table>
+      <tr><th>Status</th><th>Meaning</th></tr>
+      <tr><td><span class="badge status2">201</span></td><td class="desc">Created — <code>{ "status": "received", "id": "uuid" }</code></td></tr>
+      <tr><td><span class="badge status4">400</span></td><td class="desc">Malformed payload, missing required field, or oversized body</td></tr>
+      <tr><td><span class="badge status4">404</span></td><td class="desc">widget_id doesn't exist or widget isn't active</td></tr>
+      <tr><td><span class="badge status4">429</span></td><td class="desc">Rate limit exceeded — tracked per IP and per widget</td></tr>
+    </table>
+
+    <div class="contract-label" style="margin-top:20px;">GET /widgets/:id/config — public, cached</div>
+    <div class="contract-block">
+Response headers:<br>
+Cache-Control: public, max-age=300<br>
+ETag: "&lt;hash of config + embed_version&gt;"<br><br>
+Response body:<br>
+{ "type", "copy", "fields", "targeting", "style", "embed_version" }
+    </div>
+
+    <h3>CORS policy (both endpoints)</h3>
+    <p style="font-size:13px; color:var(--dim); max-width:640px;">
+      <code>Access-Control-Allow-Origin</code> reflects the requesting origin only if it matches a domain registered on that widget's targeting rules (or is left open for widgets with no domain restriction). <code>OPTIONS</code> preflight is handled explicitly on both routes — this is the most-attacked surface in the whole program, so CORS is enforced server-side, not just assumed from browser behavior.
+    </p>
+  </section>
+
+  <section>
+    <h2>Deferred to later milestones</h2>
+    <table>
+      <tr><th>Item</th><th>Milestone</th><th>Status</th></tr>
+      <tr><td>Rate limiting implementation</td><td>Wk5/6</td><td><span class="badge deferred">Design only</span></td></tr>
+      <tr><td>Geo provider fallback chain (real calls)</td><td>Wk5/6</td><td><span class="badge deferred">Design only</span></td></tr>
+      <tr><td>Spam control (honeypot logic + heuristics)</td><td>Wk5/6</td><td><span class="badge deferred">Design only</span></td></tr>
+      <tr><td>Cached config delivery (real cache headers, ETag)</td><td>Wk8</td><td><span class="badge deferred">Design only</span></td></tr>
+      <tr><td>Real embed script + second-origin test page</td><td>Wk8</td><td><span class="badge deferred">Design only</span></td></tr>
+      <tr><td>Owner dashboard + stats</td><td>Wk8</td><td><span class="badge deferred">Design only</span></td></tr>
+      <tr><td>Tests (CORS preflight, validation, rate limit, fallback)</td><td>Wk8</td><td><span class="badge deferred">Design only</span></td></tr>
+    </table>
+    <div class="note-card" style="margin-top:14px;">
+      <b>Why design-only now:</b> every later milestone builds directly on the shapes defined here — the widget's <code>config</code> JSON shape, the submission's request contract, and the tenant-isolation column on both tables. Getting these three right now means Wk5/6's endpoint work is implementation, not redesign.
+    </div>
+  </section>
+
+  <footer>
+    <span>Embeddable Widget &amp; Lead-Capture Platform / wk3-design</span>
+    <span>capstone — backend AI engineering</span>
+  </footer>
+
+</div>
+</body>
+</html>
