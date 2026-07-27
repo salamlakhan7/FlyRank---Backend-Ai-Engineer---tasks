@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Three Roads — Stack Decision</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1220; --ink:#14181F; --paper:#FAFAF8; --card:#FFFFFF;
+    --gold:#E8A33D; --hair:#E4E3DE; --dim:#6B7280;
+    --green:#3D8F63; --green-bg:#EAF6EF; --red:#C0483F; --red-bg:#FBEAE8;
+    --mono:'IBM Plex Mono',monospace; --sans:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--paper); color:var(--ink); font-family:var(--sans); line-height:1.6;}
+  .wrap{max-width:960px;margin:0 auto;padding:64px 32px 90px;}
+  .kicker{font-family:var(--mono);font-size:13px;color:var(--gold);margin-bottom:10px;}
+  h1{font-family:var(--mono);font-weight:600;font-size:28px;letter-spacing:-0.01em;margin-bottom:6px;}
+  .lede{color:var(--dim);font-size:14px;max-width:620px;margin-bottom:40px;}
+  section{margin-bottom:44px;}
+  h2{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--navy);
+     text-transform:uppercase;letter-spacing:0.06em;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--hair);}
+
+  .constraints{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .constraint{background:var(--card); border:1px solid var(--hair); border-radius:8px; padding:14px 18px;}
+  .constraint .label{font-family:var(--mono); font-size:10.5px; color:var(--gold); text-transform:uppercase; margin-bottom:6px;}
+  .constraint .val{font-size:13px;}
+
+  .roads{display:flex; flex-direction:column; gap:14px;}
+  .road{border:1px solid var(--hair); border-radius:8px; overflow:hidden; background:var(--card);}
+  .road-head{padding:14px 20px; display:flex; justify-content:space-between; align-items:center; background:#F0F1F3;}
+  .road-name{font-family:var(--mono); font-weight:600; font-size:14px;}
+  .road-tag{font-family:var(--mono); font-size:10.5px; color:var(--dim);}
+  .road.chosen .road-head{background:var(--navy);}
+  .road.chosen .road-name{color:#EDEFF3;}
+  .road.chosen .road-tag{color:var(--gold);}
+  .road-body{padding:14px 20px; font-size:13px;}
+  .road-row{display:flex; gap:10px; padding:6px 0; border-bottom:1px solid var(--hair);}
+  .road-row:last-child{border-bottom:none;}
+  .road-row .k{font-family:var(--mono); font-size:11px; color:var(--dim); width:110px; flex-shrink:0;}
+  .road-row .v{font-size:12.5px;}
+  .chosen-badge{font-family:var(--mono); font-size:10px; background:var(--gold); color:var(--navy); padding:3px 8px; border-radius:4px;}
+
+  .pressure-test{background:var(--card); border:1px solid var(--hair); border-radius:8px; padding:18px 22px;}
+  .pt-q{font-family:var(--mono); font-weight:600; font-size:12.5px; color:var(--navy); margin-top:14px;}
+  .pt-q:first-child{margin-top:0;}
+  .pt-a{font-size:13px; color:var(--dim); margin-top:4px;}
+
+  .rationale{background:var(--navy); color:#EDEFF3; border-radius:8px; padding:22px 26px; font-size:13.5px; line-height:1.75;}
+  .rationale b{color:var(--gold);}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--hair);
+    font-family:var(--mono);font-size:11px;color:var(--dim);display:flex;justify-content:space-between;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="kicker">// three roads — week 4</div>
+  <h1>Choose Your Stack, With AI</h1>
+  <p class="lede">Four real constraints given up front, three genuine options weighed against them, the front-runner pressure-tested, and a decision made in my own words — not the first answer accepted.</p>
+
+  <section>
+    <h2>The four constraints given</h2>
+    <div class="constraints">
+      <div class="constraint">
+        <div class="label">Budget</div>
+        <div class="val">Free only — no paid hosting, no paid tools</div>
+      </div>
+      <div class="constraint">
+        <div class="label">Honest skill level</div>
+        <div class="val">Backend-focused (Python/FastAPI/Django). Comfortable with git, HTML/CSS. No prior React/Next.js project experience.</div>
+      </div>
+      <div class="constraint">
+        <div class="label">What the portfolio needs to do</div>
+        <div class="val">Show a sitemap-defined site (Hero → Work → About → Buy), case studies with screenshots, and links out to real repos/demos. Nothing on the site itself needs to be dynamic yet — no accounts, no live database-backed content.</div>
+      </div>
+      <div class="constraint">
+        <div class="label">How work must be shown</div>
+        <div class="val">Image galleries (case-study screenshots), long-form case-study text, and links to external code repos / demo GIFs — not an embedded live app.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Three roads, simplest to most powerful</h2>
+    <div class="roads">
+
+      <div class="road chosen">
+        <div class="road-head">
+          <span class="road-name">Road 1 — Static HTML/CSS + GitHub Pages</span>
+          <span class="chosen-badge">CHOSEN</span>
+        </div>
+        <div class="road-body">
+          <div class="road-row"><div class="k">Build</div><div class="v">Hand-written / AI-assisted static HTML, CSS, no build step, no framework</div></div>
+          <div class="road-row"><div class="k">Host</div><div class="v">GitHub Pages — free, already connected to my existing repo</div></div>
+          <div class="road-row"><div class="k">Backend</div><div class="v">None</div></div>
+          <div class="road-row"><div class="k">Trade-off</div><div class="v">Fastest to ship, zero maintenance surface, but every content update means editing HTML directly — no CMS, no templating reuse across pages</div></div>
+        </div>
+      </div>
+
+      <div class="road">
+        <div class="road-head"><span class="road-name">Road 2 — Static site generator (Astro / Jekyll) + free host</span><span class="road-tag">middle</span></div>
+        <div class="road-body">
+          <div class="road-row"><div class="k">Build</div><div class="v">Templated pages, reusable layout/header/footer, still compiles to plain static files</div></div>
+          <div class="road-row"><div class="k">Host</div><div class="v">GitHub Pages or Netlify, still free</div></div>
+          <div class="road-row"><div class="k">Backend</div><div class="v">None required; a form service (Netlify Forms free tier) could be bolted on later</div></div>
+          <div class="road-row"><div class="k">Trade-off</div><div class="v">Solves the "editing HTML by hand" problem as case studies grow, but adds a new tool to learn on top of an already full backend-engineering course load</div></div>
+        </div>
+      </div>
+
+      <div class="road">
+        <div class="road-head"><span class="road-name">Road 3 — Next.js on Vercel, with API routes</span><span class="road-tag">most powerful</span></div>
+        <div class="road-body">
+          <div class="road-row"><div class="k">Build</div><div class="v">React/Next.js, component-based, optional serverless API routes</div></div>
+          <div class="road-row"><div class="k">Host</div><div class="v">Vercel free tier</div></div>
+          <div class="road-row"><div class="k">Backend</div><div class="v">Available if needed — could wire into the Supabase project already set up for the Week 4 auth assignment</div></div>
+          <div class="road-row"><div class="k">Trade-off</div><div class="v">Most impressive ceiling and the most "real app" feel, but a full JS toolchain, build pipeline, and framework to learn — the biggest mismatch against current skill level and timeline</div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>Pressure-testing the front-runner (Road 1)</h2>
+    <div class="pressure-test">
+      <div class="pt-q">What breaks if I pick the simplest?</div>
+      <div class="pt-a">No built-in image gallery component (hand-coded grid instead), no contact-form backend (would need a third-party free form service like Formspree if ever needed), and reusing a consistent header/footer means copy-pasting across pages rather than a shared layout.</div>
+
+      <div class="pt-q">What do I maintain if I pick the most powerful?</div>
+      <div class="pt-a">A React/Next.js toolchain, dependency updates, a build step that can break, and debugging surface area I don't have experience with yet — on top of an already dense weekly assignment schedule.</div>
+
+      <div class="pt-q">Can I finish in two weeks?</div>
+      <div class="pt-a">Road 1: yes — already built and live (see Week 4's "Empty but Live" deployment). Road 3: risky — no prior Next.js project completed, and the course load leaves little slack for a new framework's learning curve.</div>
+
+      <div class="pt-q">Does it show my work the way it needs to?</div>
+      <div class="pt-a">Yes. Case-study screenshots work as a plain image grid; long-form case-study text is just HTML; the DocuMind agent demo doesn't need to live inside the portfolio — it links out to its own repo, README, and a recorded GIF. The portfolio's job is to point at proof, not host the proof itself.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Decision, in my own words</h2>
+    <div class="rationale">
+      I'm going with <b>Road 1 — static HTML/CSS on GitHub Pages</b>. I considered a static-site generator (Road 2) and Next.js on Vercel (Road 3), but rejected both for the same underlying reason: neither content-editing convenience nor a live backend actually solves a problem I have right now. My portfolio's content — a sitemap, four case studies, an about section, and a contact action — is fixed and small enough that hand-editing HTML isn't a real burden, and nothing on the site needs to be dynamic; the one thing that <i>is</i> dynamic (the DocuMind agent) already has its own home and just needs a link.<br><br>
+      <b>Can I maintain this?</b> Yes — it's the same three files I already understand, on a host I've already configured, with zero moving parts to break between now and the next deadline. If the portfolio outgrows hand-edited HTML later (many more case studies, a blog, recurring content updates), Road 2 is the natural upgrade — not Road 3, since a live backend still isn't something this project needs.<br><br>
+      <b>Backend question, answered honestly:</b> not yet. The portfolio itself has no reason to talk to a database or run server logic — that complexity belongs to the projects it links to, not to the site that lists them.
+    </div>
+  </section>
+
+  <footer>
+    <span>Three Roads / stack-decision</span>
+    <span>week 4 — build</span>
+  </footer>
+
+</div>
+</body>
+</html>
