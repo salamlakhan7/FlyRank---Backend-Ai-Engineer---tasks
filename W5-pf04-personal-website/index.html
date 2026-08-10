@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Abdul Salam — Backend & AI Systems Engineer</title>
+<meta name="description" content="Abdul Salam — Backend & AI Systems Engineer. Django, FastAPI, RAG, LLMs." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1220;
+    --panel:#111B2E;
+    --panel-line:#26334A;
+    --paper:#EDEFF3;
+    --paper-dim:#B7C0D1;
+    --signal:#3DDC97;   /* success ping */
+    --amber:#F2A93B;    /* pending/attn */
+    --wire:#5C7CFA;     /* link accent */
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Space Grotesk', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{ color:var(--wire); text-decoration:none; }
+  a:hover{ text-decoration:underline; }
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--signal);
+    outline-offset:3px;
+  }
+
+  .wrap{
+    max-width:860px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    padding:72px 0 48px;
+    border-bottom:1px solid var(--panel-line);
+  }
+  .status-line{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    letter-spacing:.04em;
+    color:var(--signal);
+    margin-bottom:28px;
+  }
+  .dot{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--signal);
+    box-shadow:0 0 0 3px rgba(61,220,151,.15);
+    flex:none;
+  }
+  h1{
+    font-size:clamp(34px, 6vw, 56px);
+    line-height:1.05;
+    margin:0 0 14px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  h1 span{ color:var(--paper-dim); font-weight:500; }
+  .role{
+    font-size:clamp(16px, 2.4vw, 19px);
+    color:var(--paper-dim);
+    max-width:52ch;
+    margin:0 0 32px;
+    line-height:1.55;
+  }
+  .role b{ color:var(--paper); font-weight:600; }
+
+  nav.links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  nav.links a{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--paper);
+    border:1px solid var(--panel-line);
+    padding:9px 14px;
+    border-radius:var(--radius);
+    background:var(--panel);
+    transition:border-color .15s ease, transform .1s ease;
+  }
+  nav.links a:hover{
+    border-color:var(--wire);
+    text-decoration:none;
+    transform:translateY(-1px);
+  }
+  nav.links a.primary{
+    border-color:var(--signal);
+    color:var(--signal);
+  }
+
+  /* ---------- SECTION LABEL ---------- */
+  .section{ padding:56px 0; border-bottom:1px solid var(--panel-line); }
+  .section-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+    margin:0 0 24px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-label::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background:var(--panel-line);
+  }
+
+  /* ---------- STACK / SERVICES ---------- */
+  .services{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(190px,1fr));
+    gap:10px;
+  }
+  .service{
+    border:1px solid var(--panel-line);
+    background:var(--panel);
+    padding:14px 16px;
+    border-radius:var(--radius);
+  }
+  .service .name{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13.5px;
+    font-weight:500;
+  }
+  .service .meta{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-top:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--paper-dim);
+  }
+  .service .meta .dot{ width:6px; height:6px; }
+
+  /* ---------- PROJECTS AS ENDPOINTS ---------- */
+  .endpoint{
+    border:1px solid var(--panel-line);
+    background:var(--panel);
+    border-radius:var(--radius);
+    margin-bottom:14px;
+    overflow:hidden;
+  }
+  .endpoint-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 18px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    border-bottom:1px solid var(--panel-line);
+    flex-wrap:wrap;
+  }
+  .verb{
+    color:var(--ink);
+    background:var(--signal);
+    font-weight:600;
+    padding:2px 8px;
+    border-radius:var(--radius);
+    letter-spacing:.03em;
+  }
+  .path{ color:var(--paper); }
+  .status-code{
+    margin-left:auto;
+    color:var(--signal);
+  }
+  .endpoint-body{ padding:16px 18px 20px; }
+  .endpoint-body h3{
+    margin:0 0 8px;
+    font-size:18px;
+    font-weight:600;
+  }
+  .endpoint-body p{
+    margin:0 0 14px;
+    color:var(--paper-dim);
+    font-size:14.5px;
+    line-height:1.6;
+    max-width:64ch;
+  }
+  .tags{
+    display:flex; flex-wrap:wrap; gap:6px;
+    margin-bottom:14px;
+  }
+  .tags span{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--paper-dim);
+    border:1px solid var(--panel-line);
+    padding:3px 8px;
+    border-radius:var(--radius);
+  }
+  .endpoint-links{ display:flex; gap:16px; font-size:13.5px; font-family:'IBM Plex Mono', monospace; }
+
+  /* ---------- LOG / EXPERIENCE ---------- */
+  .log-entry{
+    display:grid;
+    grid-template-columns:120px 1fr;
+    gap:18px;
+    padding:16px 0;
+    border-bottom:1px dashed var(--panel-line);
+  }
+  .log-entry:last-child{ border-bottom:none; }
+  .log-time{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--paper-dim);
+    padding-top:2px;
+  }
+  .log-content h4{ margin:0 0 4px; font-size:15.5px; font-weight:600; }
+  .log-content .org{ color:var(--paper-dim); font-size:13px; margin-bottom:6px; font-family:'IBM Plex Mono', monospace; }
+  .log-content p{ margin:0; font-size:14px; color:var(--paper-dim); line-height:1.6; }
+
+  /* ---------- FOOTER / CTA ---------- */
+  footer{
+    padding:56px 0 72px;
+    text-align:left;
+  }
+  footer h2{
+    font-size:clamp(24px,4vw,32px);
+    margin:0 0 12px;
+  }
+  footer p{ color:var(--paper-dim); margin:0 0 24px; max-width:52ch; line-height:1.6; }
+  .cta-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .btn{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13.5px;
+    padding:12px 20px;
+    border-radius:var(--radius);
+  }
+  .btn-fill{
+    background:var(--signal);
+    color:var(--ink);
+    font-weight:600;
+    border:1px solid var(--signal);
+  }
+  .btn-fill:hover{ text-decoration:none; opacity:.9; }
+  .btn-outline{
+    border:1px solid var(--panel-line);
+    color:var(--paper);
+  }
+  .btn-outline:hover{ text-decoration:none; border-color:var(--wire); }
+  .foot-note{
+    margin-top:40px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--panel-line);
+  }
+
+  @media (max-width:520px){
+    .log-entry{ grid-template-columns:1fr; gap:4px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="status-line mono">
+      <span class="dot"></span> AVAILABLE — OPEN TO INTERN / ENTRY / JUNIOR ROLES
+    </div>
+    <h1>Abdul Salam<br><span>Backend &amp; AI Systems Engineer</span></h1>
+    <p class="role">I build <b>production backend systems</b> — Django &amp; FastAPI APIs, Postgres schemas, and <b>RAG pipelines</b> wired to real LLMs — then deploy and debug them live. Based in Ghotki, Sindh, Pakistan. Open to onsite roles in Lahore/Islamabad or remote worldwide.</p>
+    <nav class="links">
+      <a href="#" class="primary">Book a call ↗</a>
+      <a href="https://github.com/salamlakhan7" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://linkedin.com/in/abdul-salam-501b2025b" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="#" target="_blank" rel="noopener">CV (PDF)</a>
+      <a href="mailto:salamlakhan7@gmail.com">Email</a>
+    </nav>
+  </header>
+
+  <section class="section" id="stack">
+    <p class="section-label">services running // stack</p>
+    <div class="services">
+      <div class="service"><div class="name">Django + DRF</div><div class="meta"><span class="dot"></span>core</div></div>
+      <div class="service"><div class="name">FastAPI</div><div class="meta"><span class="dot"></span>core</div></div>
+      <div class="service"><div class="name">PostgreSQL</div><div class="meta"><span class="dot"></span>core</div></div>
+      <div class="service"><div class="name">ChromaDB</div><div class="meta"><span class="dot"></span>ai</div></div>
+      <div class="service"><div class="name">Groq LLM</div><div class="meta"><span class="dot"></span>ai</div></div>
+      <div class="service"><div class="name">Sentence Transformers</div><div class="meta"><span class="dot"></span>ai</div></div>
+      <div class="service"><div class="name">Docker</div><div class="meta"><span class="dot"></span>infra</div></div>
+      <div class="service"><div class="name">React + Tailwind</div><div class="meta"><span class="dot"></span>frontend</div></div>
+    </div>
+  </section>
+
+  <section class="section" id="projects">
+    <p class="section-label">endpoints // selected work</p>
+
+    <div class="endpoint">
+      <div class="endpoint-head">
+        <span class="verb">GET</span><span class="path">/projects/documind</span>
+        <span class="status-code">200 OK</span>
+      </div>
+      <div class="endpoint-body">
+        <h3>DocuMind — AI Legal &amp; Financial Document Analyst</h3>
+        <p>Full RAG pipeline: PDF upload → chunking → embeddings → ChromaDB retrieval → grounded LLM answers with source citations, scoped per user document.</p>
+        <div class="tags"><span>Django</span><span>ChromaDB</span><span>Groq LLM</span><span>RAG</span></div>
+        <div class="endpoint-links"><a href="#" target="_blank">GitHub ↗</a><a href="#" target="_blank">Live demo ↗</a></div>
+      </div>
+    </div>
+
+    <div class="endpoint">
+      <div class="endpoint-head">
+        <span class="verb">GET</span><span class="path">/projects/job-connect</span>
+        <span class="status-code">200 OK</span>
+      </div>
+      <div class="endpoint-body">
+        <h3>Job Connect — AI-Powered Job Portal</h3>
+        <p>Final year project, built solo. Role-based marketplace with real-time WebSocket chat, AI resume intelligence, ATS scoring, and semantic job matching via ChromaDB.</p>
+        <div class="tags"><span>Django Channels</span><span>WebSockets</span><span>Redis</span><span>ChromaDB</span></div>
+        <div class="endpoint-links"><a href="https://github.com/salamlakhan7/Job-connect-Full-stack" target="_blank">GitHub ↗</a><a href="#" target="_blank">Live demo ↗</a></div>
+      </div>
+    </div>
+
+    <div class="endpoint">
+      <div class="endpoint-head">
+        <span class="verb">GET</span><span class="path">/projects/ab-medical</span>
+        <span class="status-code">200 OK</span>
+      </div>
+      <div class="endpoint-body">
+        <h3>AB Medical Assistance — Healthcare Platform</h3>
+        <p>Full-stack platform with a rule-based AI medicine recommendation engine, emergency detection, role-based auth, and an owner analytics dashboard.</p>
+        <div class="tags"><span>Django REST</span><span>React</span><span>JWT</span><span>PostgreSQL</span></div>
+        <div class="endpoint-links"><a href="#" target="_blank">GitHub ↗</a><a href="#" target="_blank">Live demo ↗</a></div>
+      </div>
+    </div>
+
+    <div class="endpoint">
+      <div class="endpoint-head">
+        <span class="verb">GET</span><span class="path">/projects/visionx-tracker</span>
+        <span class="status-code">200 OK</span>
+      </div>
+      <div class="endpoint-body">
+        <h3>VisionX Tracker — Real-Time Object Detection</h3>
+        <p>Computer vision system tracking 10+ object classes across live video with persistent IDs via Deep SORT, across webcam / video / image input.</p>
+        <div class="tags"><span>YOLOv8</span><span>Deep SORT</span><span>OpenCV</span><span>Streamlit</span></div>
+        <div class="endpoint-links"><a href="#" target="_blank">GitHub ↗</a><a href="#" target="_blank">Live demo ↗</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="experience">
+    <p class="section-label">request log // experience</p>
+
+    <div class="log-entry">
+      <div class="log-time mono">2026<br>Jul–Aug</div>
+      <div class="log-content">
+        <h4>Backend AI Engineer Intern</h4>
+        <div class="org">FlyRank — Remote (USA-based)</div>
+        <p>Shipped early FastAPI service endpoints, containerized with Docker, and built a swap-without-breaking repository pattern behind a shared storage interface.</p>
+      </div>
+    </div>
+
+    <div class="log-entry">
+      <div class="log-time mono">2026<br>Jul–Aug</div>
+      <div class="log-content">
+        <h4>Associate AI Engineer Track</h4>
+        <div class="org">Nolyth Software House AI Bootcamp — Remote</div>
+        <p>Shipped a full-stack Task/To-Do Manager as a 3-service production deployment: FastAPI on Render, Postgres on Neon, Streamlit UI on Streamlit Cloud.</p>
+      </div>
+    </div>
+
+    <div class="log-entry">
+      <div class="log-time mono">2025–26<br>Nov–Jan</div>
+      <div class="log-content">
+        <h4>Django Backend Developer Intern</h4>
+        <div class="org">Developers Hub Corporation — Remote</div>
+        <p>Built and maintained a production eCommerce backend: REST APIs, JWT auth, relational data models on PostgreSQL.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <h2>Let's build something that ships.</h2>
+    <p>Open to intern, entry, junior, and associate backend/AI roles — onsite in Lahore or Islamabad, or remote worldwide.</p>
+    <div class="cta-row">
+      <a class="btn btn-fill" href="#">Book a call ↗</a>
+      <a class="btn btn-outline" href="mailto:salamlakhan7@gmail.com">salamlakhan7@gmail.com</a>
+      <a class="btn btn-outline" href="#" target="_blank">Download CV</a>
+    </div>
+    <p class="foot-note mono">// dummy placeholder site — replace # links with real CV / booking URLs before shipping</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
